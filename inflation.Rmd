@@ -1,0 +1,95 @@
+---
+title: "Inflation Data"
+author: "Aaron Peikert"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  tufte::tufte_html: default
+  tufte::tufte_handout: default
+repro:
+  packages:
+  - here
+  - tidyverse
+  - lubridate
+  - aaronpeikert/repro@fc7e884
+  scripts: R/prepare_inflation.R
+  data: data/raw/inflation.rds
+---
+
+```{r setup, include=FALSE}
+repro::automate_load_packages()
+repro::automate_load_scripts()
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## This is a test 
+# This is another test
+
+This is **bold**, while this is *italic*.
+
+The dataset we use stems from the [Bank of England Research datasets](https://www.bankofengland.co.uk/statistics/research-datasets).
+
+I quote:
+
+> This dataset contains the individual responses to our Inflation Attitudes Survey, a quarterly survey of people’s feelings about inflation and other economic variables like the interest rate. 
+
+```{r load-inflation}
+# code chunks can come from other scripts, this one is loaded from:
+# `R/prepare_inflation.R`
+```
+
+```{r transform-inflation}
+# this chunk is also loaded from the same script
+# note that they must be empty and the names must correspond
+```
+
+For this dataset the Bank of England asked `r prettyNum(nrow(inflation), big.mark = ".", decimal.mark = ",")` people for their opinion on the perceived and expected inflation.
+The survey has run quarterly since `r min(inflation$year)`.
+
+```{r}
+inflation %>% 
+  group_by(date) %>% 
+  summarise(across(c(perception, expectation),
+                   ~ mean(., na.rm = TRUE)),
+            .groups = "drop") %>% 
+  pivot_longer(c(expectation, perception)) %>% 
+  ungroup() %>% 
+  ggplot() +
+  geom_line(aes(date, value, color = name)) +
+    theme_minimal() +
+  ylab("subjective inflation in %-points") +
+  labs(color = "") +
+  theme(legend.position = c(.1, .9)) +
+  NULL 
+  
+```
+
+
+```{r}
+
+with(mtcars, plot(hp, mpg))
+
+```
+
+This is an inline R test: `r 9+3` Great. 
+
+```{python}
+
+print("Hello World! Python here, do you miss R already?")
+
+```
+
+```{r}
+
+# use a function without loading the package:
+# package::function
+usethis::use_git_config(
+  user.name = "Jens Fuenderich", # <-- change to your name
+  user.email = "Jens.Fuenderich@uni-erfurt.de", # <-- and your email
+  init.defaultBranch = "main") # <-- not necessary but kinder than 'master'
+
+```
+
+
+
+
