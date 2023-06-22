@@ -71,12 +71,6 @@ with(mtcars, plot(hp, mpg))
 
 This is an inline R test: `r 9+3` Great. 
 
-```{python}
-
-print("Hello World! Python here, do you miss R already?")
-
-```
-
 ```{r}
 
 # use a function without loading the package:
